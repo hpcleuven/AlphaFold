@@ -1,7 +1,9 @@
 # Running AlphaFold as a Singularity container on VSC
 
 This workflow closely follows the recipe on how to build and use an AlphaFold Signularity container as described here: https://github.com/hyoo/alphafold_singularity.
+
 The repository referenced above provides definition files to build a singularity container of DeepMind's AlphaFold v2 (https://github.com/deepmind/alphafold).
+
 The build instructions for a [non-docker setting] by kalininalab have been used (https://github.com/kalininalab/alphafold_non_docker).
 
 ## Build the containers

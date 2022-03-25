@@ -14,6 +14,13 @@ By default, Singularity uses the VSC user's home directory to store its cache. F
 export SINGULARITY_CACHEDIR=$VSC_SCRATCH/singularity-cache
 ```
 
+Clone the Git repository and navigate to its location:
+
+```
+git clone https://github.com/hyoo/alphafold_singularity.git
+cd alphafold_singularity
+```
+
 Then build the necessary containers:
 
 ```

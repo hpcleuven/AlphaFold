@@ -1,4 +1,42 @@
-# Running AlphaFold as a Singularity container on VSC
+# General notes on Singularity containers on VSC
+
+## Singularity cache directory
+
+By default, [Singularity](https://sylabs.io) uses the VSC user's home directory to store its cache. For very small containers that might not be an issue but bigger ones will cause the home direcotry to run out of space. Hence, it is advisable to point Singularity to use a different directory, e.g., somewhere on the user's scratch space:
+
+```
+export SINGULARITY_CACHEDIR=$VSC_SCRATCH/singularity-cache
+```
+
+## Mount external directories
+
+One will have to mount external directories in order for them to be available within the  Singularity container.
+
+One can bind multiple directories in a single command with this syntax:
+
+```
+singularity exec --bind /dir1,/dir2:/mnt my_container.sif
+```
+
+Using the environment variable instead:
+
+```
+export SINGULARITY_BIND="/dir1,/dir2:/mnt"
+```
+
+All subdirectories and files in /dir1 and /dir2 will be mounted under /mnt - e.g., */mnt/relative-subdir-path/* and */mnt/filename* - and available for use within the container.
+
+## AlphaFold database
+
+The database on the VSC machines at KU Leuven is located in:
+
+Tier-1: /scratch/leuven/projects/lp_alphafold
+
+Tier-2: /lustre1/project/res_00002/lp_alphafold
+
+If these locations are not visible within the Singularity container then they should be mounted.
+
+# Running AlphaFold as a Singularity container on VSC at KU Leuven -  Tutorial 1
 
 This workflow closely follows the recipe on how to build and use an AlphaFold Signularity container as described here: https://github.com/hyoo/alphafold_singularity.
 
@@ -7,12 +45,6 @@ The repository referenced above provides definition files to build a Singularity
 The build instructions for a [non-docker setting] by kalininalab have been used (https://github.com/kalininalab/alphafold_non_docker).
 
 ## Build the containers
-
-By default, Singularity uses the VSC user's home directory to store its cache. For very small containers that might not be an issue but bigger ones will cause the home direcotry to run out of space. Hence, it is advisable to point Singularity to use a different directory, e.g., somewhere on the user's scratch space:
-
-```
-export SINGULARITY_CACHEDIR=$VSC_SCRATCH/singularity-cache
-```
 
 Clone the Git repository and navigate to its location:
 
@@ -65,6 +97,57 @@ cd /opt/alphafold/
 -a <gpu_devices>  Comma separated list of devices to pass to 'CUDA_VISIBLE_DEVICES' (default: 0)
   
 -p <preset>       Choose preset model configuration - no ensembling (full_dbs) or 8 model ensemblings (casp14) (default: 'full_dbs')
+
+# Running AlphaFold as a Singularity container on VSC at KU Leuven -  Tutorial 2
+
+This tutorial is based on the [AlphaFold tutorial at HPRC](https://hprc.tamu.edu/wiki/SW:AlphaFold). The Docker container file used to build the Singularity Image File (SIF) can be found here - [catgumag/alphafold](https://hub.docker.com/r/catgumag/alphafold). The respective [GitHub repository](https://github.com/dialvarezs/alphafold) provides the Python interface to run AlphaFold via Singularity on an HPC systems.
+
+Pull and build the AlphaFold container:
+
+```
+singularity build AlphaFold2.2.0.sif docker://catgumag/alphafold
+```
+
+This will create a Singularity container AlphaFold2.2.0.sif
+
+Pull the wrapper Python script from GitHub:
+
+```
+git clone https://github.com/dialvarezs/alphafold.git
+```
+
+The wrapper Python script used to run the container is:
+
+```
+/path-to-the-git-repository/alphafold/run_alphafold.py
+```
+
+Python>=3.8 is required in order to run AlphaFold. Switch to an EasyBuild toolchain with suitable Python version and load the module, e.g.,:
+
+```
+module load Python
+```
+
+Check the help of the Python script for the available options with:
+
+python /path-to-the-git-repository/alphafold/run_alphafold.py --helpfull
+
+Mount the location of the Python wrapper for example and list its contents like so:
+```
+singularity exec --bind /path-to-the-git-repository/alphafold:/mnt /path-to-singularity-image-file/AlphaFold2.2.0.sif ls /mnt
+```
+
+The Python wrapper script can be used with the container like this:
+
+```
+singularity exec --bind /path-to-the-git-repository/alphafold:/mnt /path-to-singularity-image-file/AlphaFold2.2.0.sif python /mnt/run_alphafold.py --helpfull
+```
+
+Run the container with, e.g.,:
+
+```
+singularity exec --bind /path-to-the-git-repository/alphafold:/mnt /path-to-singularity-image-file/AlphaFold2.2.0.sif python /mnt/run_alphafold.py [OPTIONS]
+```
 
 # Running AlphaFold as a batch job on VSC
 Please refer to the [VIB](https://vib.be/) tutorial material created by Jasper Zuallaert (VIB-UGent), with the help of Alexander Botzki (VIB) and Kenneth Hoste (UGent) here:  https://elearning.bits.vib.be/courses/alphafold/

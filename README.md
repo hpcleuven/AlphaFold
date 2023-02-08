@@ -8,7 +8,7 @@ By default, [Apptainer](https://apptainer.org) (formerly Singularity) uses the V
 export APPTAINER_CACHEDIR=$VSC_SCRATCH/apptainer-cache
 ```
 
-NOTE: If both ```SINGULARITY_CACHEDIR``` (legacy) and APPTAINER_CACHEDIR have been defined and have different values, APPTAINER_CACHEDIR will be used.
+NOTE: If both ```SINGULARITY_CACHEDIR``` (legacy) and ```APPTAINER_CACHEDIR``` have been defined and have different values, ```APPTAINER_CACHEDIR``` will be used. The value of  ```SINGULARITY_CACHEDIR``` will be accepted only if ```APPTAINER_CACHEDIR``` has not been defined. This holds for all legacy (Singularity) environment variables.
 
 ## Mount external directories
 
@@ -100,7 +100,7 @@ cd /opt/alphafold/
   
 -p <preset>       Choose preset model configuration - no ensembling (full_dbs) or 8 model ensemblings (casp14) (default: 'full_dbs')
 
-# Running AlphaFold as an Apptainer container on VSC at KU Leuven -  Tutorial 2
+# Running AlphaFold as an Apptainer container on VSC at KU Leuven - Tutorial 2
 
 This tutorial is based on the [AlphaFold tutorial at HPRC](https://hprc.tamu.edu/wiki/SW:AlphaFold). The Docker container file used to build the Apptainer Image File (SIF) can be found here - [catgumag/alphafold](https://hub.docker.com/r/catgumag/alphafold). The respective [GitHub repository](https://github.com/dialvarezs/alphafold) provides the Python interface to run AlphaFold via Apptainer on an HPC systems.
 

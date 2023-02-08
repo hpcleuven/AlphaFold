@@ -8,7 +8,7 @@ By default, [Apptainer](https://apptainer.org) (formerly Singularity) uses the V
 export APPTAINER_CACHEDIR=$VSC_SCRATCH/apptainer-cache
 ```
 
-NOTE: If both SINGULARITY_CACHEDIR (legacy) and APPTAINER_CACHEDIR have been defined and have different values, APPTAINER_CACHEDIR will be used.
+NOTE: If both ```SINGULARITY_CACHEDIR``` (legacy) and APPTAINER_CACHEDIR have been defined and have different values, APPTAINER_CACHEDIR will be used.
 
 ## Mount external directories
 

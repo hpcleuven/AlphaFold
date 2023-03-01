@@ -102,6 +102,24 @@ cd /opt/alphafold/
 
 # Running AlphaFold as an Apptainer container on VSC at KU Leuven - Tutorial 2
 
+One can also download the official AlphaFold repository on a local computer, build a Docker container, and then create from it an Aptainer/Singularity container which later can be transferred to VSC. In the workflow below we use Singularity for the container conversion step since it is readily available for install on most Linux systems.
+
+Clone locally the official Alphafold repository and build:
+
+Warning: the building and pushing stages can be very heavy on the CPU
+
+```
+git clone https://github.com/deepmind/alphafold.git
+cd alphafold
+sudo docker build -f docker/Dockerfile -t alphafold .
+sudo docker run -d -p 5000:5000 --restart=always --name registry registry:2
+sudo docker image tag alphafold:latest localhost:5000/alphafold:latest
+sudo docker push localhost:5000/alphafold:latest
+sudo SINGULARITY_NOHTTPS=true singularity build alphafold.sif docker://localhost:5000/alphafold:latest
+```
+
+# Running AlphaFold as an Apptainer container on VSC at KU Leuven - Tutorial 3
+
 This tutorial is based on the [AlphaFold tutorial at HPRC](https://hprc.tamu.edu/wiki/SW:AlphaFold). The Docker container file used to build the Apptainer Image File (SIF) can be found here - [catgumag/alphafold](https://hub.docker.com/r/catgumag/alphafold). The respective [GitHub repository](https://github.com/dialvarezs/alphafold) provides the Python interface to run AlphaFold via Apptainer on an HPC systems.
 
 Pull and build the AlphaFold container:

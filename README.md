@@ -46,6 +46,8 @@ The repository referenced above provides definition files to build an Apptainer 
 
 The build instructions for a [non-docker setting] by kalininalab have been used (https://github.com/kalininalab/alphafold_non_docker).
 
+The current recipe makes use of an updated Python packages list. The orginal AlphaFold software relies on and has been tested against a specific version-bound package list, some of which packages are too old and/or obsolate. If the user wishes to use the original package list to build AlphaFold then please refer to the Tutorial 2 on how to build the container.
+
 ## Build the containers
 
 Clone the Git repository and navigate to its location:
@@ -116,57 +118,6 @@ sudo docker run -d -p 5000:5000 --restart=always --name registry registry:2
 sudo docker image tag alphafold:latest localhost:5000/alphafold:latest
 sudo docker push localhost:5000/alphafold:latest
 sudo SINGULARITY_NOHTTPS=true singularity build alphafold.sif docker://localhost:5000/alphafold:latest
-```
-
-# Running AlphaFold as an Apptainer container on VSC at KU Leuven - Tutorial 3
-
-This tutorial is based on the [AlphaFold tutorial at HPRC](https://hprc.tamu.edu/wiki/SW:AlphaFold). The Docker container file used to build the Apptainer Image File (SIF) can be found here - [catgumag/alphafold](https://hub.docker.com/r/catgumag/alphafold). The respective [GitHub repository](https://github.com/dialvarezs/alphafold) provides the Python interface to run AlphaFold via Apptainer on an HPC systems.
-
-Pull and build the AlphaFold container:
-
-```
-apptainer build AlphaFold2.2.0.sif docker://catgumag/alphafold
-```
-
-This will create an Apptainer container AlphaFold2.2.0.sif
-
-Pull the wrapper Python script from GitHub:
-
-```
-git clone https://github.com/dialvarezs/alphafold.git
-```
-
-The wrapper Python script used to run the container is:
-
-```
-/path-to-the-git-repository/alphafold/run_alphafold.py
-```
-
-Python>=3.8 is required in order to run AlphaFold. Switch to an EasyBuild toolchain with suitable Python version and load the module, e.g.,:
-
-```
-module load Python
-```
-
-Check the help of the Python script for the available options with:
-
-python /path-to-the-git-repository/alphafold/run_alphafold.py --helpfull
-
-Mount the location of the Python wrapper for example and list its contents like so:
-```
-apptainer exec --bind /path-to-the-git-repository/alphafold:/mnt /path-to-apptainer-image-file/AlphaFold2.2.0.sif ls /mnt
-```
-
-The Python wrapper script can be used with the container like this:
-
-```
-apptainer exec --bind /path-to-the-git-repository/alphafold:/mnt /path-to-apptainer-image-file/AlphaFold2.2.0.sif python /mnt/run_alphafold.py --helpfull
-```
-
-Run the container with, e.g.,:
-
-```
-apptainer exec --bind /path-to-the-git-repository/alphafold:/mnt /path-to-apptainer-image-file/AlphaFold2.2.0.sif python /mnt/run_alphafold.py [OPTIONS]
 ```
 
 # Running AlphaFold as a batch job on VSC

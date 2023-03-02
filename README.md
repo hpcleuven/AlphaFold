@@ -46,7 +46,7 @@ The repository referenced above provides definition files to build an Apptainer 
 
 The build instructions for a [non-docker setting] by kalininalab have been used (https://github.com/kalininalab/alphafold_non_docker).
 
-The current recipe makes use of an updated Python packages list. The orginal AlphaFold software relies on and has been tested against a specific version-bound package list, some of which packages are too old and/or obsolate. If the user wishes to use the original package list to build AlphaFold then please refer to the Tutorial 2 on how to build the container.
+The current recipe makes use of an updated Python packages list. The orginal AlphaFold software relies on and has been tested against a specific version-bound package list, some of which packages are too old and/or obsolate. If the user wishes to use the original package list to build AlphaFold then please refer to Tutorial 2 on how to build the container.
 
 ## Build the containers
 

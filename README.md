@@ -40,7 +40,7 @@ If these locations are not visible within the Apptainer container then they shou
 
 # Running AlphaFold as an Apptainer container on VSC at KU Leuven -  Tutorial 1
 
-This workflow closely follows the recipe on how to build and use an AlphaFold Apptainer container as described here: https://github.com/avapirev/alphafold_apptainer.
+This workflow follows the recipe on how to build and use an AlphaFold Apptainer container as described here: https://github.com/avapirev/alphafold_apptainer.
 
 The repository referenced above provides definition files to build an Apptainer container of DeepMind's AlphaFold v2 (https://github.com/deepmind/alphafold).
 

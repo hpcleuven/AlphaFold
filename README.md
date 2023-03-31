@@ -127,3 +127,110 @@ apptainer exec $CONTAINER_IMAGE_DIR/alphafold.sif python /app/alphafold/run_alph
 
 # Running AlphaFold as a batch job on VSC
 Please refer to the [VIB](https://vib.be/) tutorial material created by Jasper Zuallaert (VIB-UGent), with the help of Alexander Botzki (VIB) and Kenneth Hoste (UGent) here: https://elearning.bits.vib.be/courses/alphafold/
+
+Below are two examples of Slurm job submission scripts - one only on CPUs and one using both CPUs and GPUs. Please bear in mind that the job parameters here are only an example and may not be suitable for proper Alphafold runs.
+  
+Submit to CPU nodes on wICE:
+```
+#!/bin/bash
+#SBATCH --cluster=wice                  # cluster name
+#SBATCH --job-name="alpha_monomer_cpu"  # job name
+#SBATCH --time=48:00:00                 # max job run time hh:mm:ss
+#SBATCH --nodes=3                       # number of nodes
+#SBATCH --ntasks-per-node=72            # tasks per compute node
+#SBATCH --mem-per-cpu=3400M             # memory per cpu
+#SBATCH --output=%x-%j.log              # job log
+#SBATCH --account=<project_credits>     # compute credits account
+
+module purge
+
+DATABASE_DIR=/lustre1/project/res_00002/lp_alphafold/AlphaFoldDBdir_20221123
+INPUT_DIR=$VSC_SCRATCH/alphafold/fastas
+OUTPUT_DIR=$VSC_SCRATCH/alphafold/runs_wice_cpu_slurm
+
+export APPTAINER_CACHEDIR=$VSC_SCRATCH/apptainer-cache
+export APPTAINER_BIND="$INPUT_DIR,$OUTPUT_DIR,$DATABASE_DIR"
+
+export CONTAINER_IMAGE_DIR=$VSC_SCRATCH/alphafold_docker_to_apptainer_image
+
+# To list input options type:
+# apptainer exec $CONTAINER_IMAGE_DIR/alphafold.sif python /app/alphafold/run_alphafold.py --help
+# If using GPUs then use the '--nv' flag, i.e. 'apptainer exec --nv ...'
+
+apptainer exec $CONTAINER_IMAGE_DIR/alphafold.sif python /app/alphafold/run_alphafold.py \
+ --data_dir=$DATABASE_DIR \
+ --uniref90_database_path=$DATABASE_DIR/uniref90/uniref90.fasta \
+ --mgnify_database_path=$DATABASE_DIR/mgnify/mgy_clusters_2018_12.fa \
+ --bfd_database_path=$DATABASE_DIR/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt \
+ --uniref30_database_path=$DATABASE_DIR/uniref30/UniRef30_2021_03 \
+ --pdb70_database_path=$DATABASE_DIR/pdb70/pdb70 \
+ --template_mmcif_dir=$DATABASE_DIR/pdb_mmcif/mmcif_files \
+ --obsolete_pdbs_path=$DATABASE_DIR/pdb_mmcif/obsolete.dat \
+ --model_preset=monomer \
+ --max_template_date=2022-1-1 \
+ --db_preset=full_dbs \
+ --output_dir=$OUTPUT_DIR \
+ --fasta_paths=$INPUT_DIR/T1050.fasta \
+ --use_gpu_relax=FALSE
+
+# GPUs must be available if '--use_gpu_relax' is enabled
+```
+
+Submit to GPU nodes:
+```
+#!/bin/bash
+#SBATCH --cluster=wice                  # cluster name
+#SBATCH --job-name="alpha_monomer_gpu"  # job name
+#SBATCH --time=48:00:00                 # max job run time hh:mm:ss
+#SBATCH --nodes=1                       # number of nodes
+#SBATCH --output=stdout.%x.%j           # save stdout to file
+#SBATCH --error=stderr.%x.%j            # save stderr to file
+#SBATCH --output=%x-%j.log              # job log
+#SBATCH --account=<project_credits>     # compute credits account
+#SBATCH --partition=gpu                 # partition
+#SBATCH --gpus-per-node=2               # number of gpus per node
+#SBATCH --ntasks=36                     # = gpus-per-node x 18
+
+module purge
+
+# Unified memory can be used to request more than just the total GPU memory for the JAX step in AlphaFold
+# - A100 GPU has 80GB memory
+# - GPU total memory (80) * XLA_PYTHON_CLIENT_MEM_FRACTION (4.0)
+# - XLA_PYTHON_CLIENT_MEM_FRACTION default = 0.9
+# This example script has 620 GB of unified memory
+# - 80x2 GB from A100 GPU + 460 GB DDR from motherboard
+# In case of "RuntimeError: Resource exhausted: Out of memory", add the following variables to the slurm script
+#export SINGULARITYENV_TF_FORCE_UNIFIED_MEMORY=1
+#export SINGULARITYENV_XLA_PYTHON_CLIENT_MEM_FRACTION=4.0
+
+DATABASE_DIR=/lustre1/project/res_00002/lp_alphafold/AlphaFoldDBdir_20221123
+INPUT_DIR=$VSC_SCRATCH/alphafold/fastas
+OUTPUT_DIR=$VSC_SCRATCH/alphafold/runs_wice_gpu_slurm
+
+export APPTAINER_CACHEDIR=$VSC_SCRATCH/apptainer-cache
+export APPTAINER_BIND="$INPUT_DIR,$OUTPUT_DIR,$DATABASE_DIR"
+
+export CONTAINER_IMAGE_DIR=$VSC_SCRATCH/alphafold_docker_to_apptainer_image
+
+# To list input options type:
+# apptainer exec --nv $CONTAINER_IMAGE_DIR/alphafold.sif python /app/alphafold/run_alphafold.py --help
+# If using GPUs then use the '--nv' flag, i.e. 'apptainer exec --nv ...'
+
+apptainer exec --nv $CONTAINER_IMAGE_DIR/alphafold.sif python /app/alphafold/run_alphafold.py \
+ --data_dir=$DATABASE_DIR \
+ --uniref90_database_path=$DATABASE_DIR/uniref90/uniref90.fasta \
+ --mgnify_database_path=$DATABASE_DIR/mgnify/mgy_clusters_2018_12.fa \
+ --bfd_database_path=$DATABASE_DIR/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt \
+ --uniref30_database_path=$DATABASE_DIR/uniref30/UniRef30_2021_03 \
+ --pdb70_database_path=$DATABASE_DIR/pdb70/pdb70 \
+ --template_mmcif_dir=$DATABASE_DIR/pdb_mmcif/mmcif_files \
+ --obsolete_pdbs_path=$DATABASE_DIR/pdb_mmcif/obsolete.dat \
+ --model_preset=monomer \
+ --max_template_date=2022-1-1 \
+ --db_preset=full_dbs \
+ --output_dir=$OUTPUT_DIR \
+ --fasta_paths=$INPUT_DIR/T1050.fasta \
+ --use_gpu_relax=TRUE
+
+# GPUs must be available if '--use_gpu_relax' is enabled
+```

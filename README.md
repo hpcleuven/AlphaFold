@@ -120,5 +120,10 @@ sudo docker push localhost:5000/alphafold:latest
 sudo SINGULARITY_NOHTTPS=true singularity build alphafold.sif docker://localhost:5000/alphafold:latest
 ```
 
+The above procedure will create a SIF container which can be now transferred to VSC. The container can be then run, e.g., see the available options like so:
+```
+apptainer exec $CONTAINER_IMAGE_DIR/alphafold.sif python /app/alphafold/run_alphafold.py --help
+```
+
 # Running AlphaFold as a batch job on VSC
 Please refer to the [VIB](https://vib.be/) tutorial material created by Jasper Zuallaert (VIB-UGent), with the help of Alexander Botzki (VIB) and Kenneth Hoste (UGent) here: https://elearning.bits.vib.be/courses/alphafold/

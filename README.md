@@ -2,13 +2,13 @@
 
 ## Apptainer cache directory
 
-By default, [Apptainer](https://apptainer.org) (formerly Singularity) uses the VSC user's home directory to store its cache (default $HOME/.apptainer/cache). For very small containers that might not be an issue but bigger ones will cause the VSC user home direcotry to run out of space. Hence, it is advisable to point Apptainer to use a different directory, e.g., somewhere on the user's scratch space:
+By default, [Apptainer](https://apptainer.org) (formerly Singularity) uses the VSC user's home directory to store its cache (default ```$HOME/.apptainer/cache```). For very small containers that might not be an issue but bigger ones will cause the VSC user home direcotry to run out of space. Hence, it is advisable to point Apptainer to use a different directory, e.g., somewhere on the user's scratch space:
 
 ```
 export APPTAINER_CACHEDIR=$VSC_SCRATCH/apptainer-cache
 ```
 
-When building a container, or pulling/running an Apptainer container from a Docker/OCI source, a temporary working space is required (default /tmp). The container is constructed in this temporary space before being packaged into an Apptainer SIF image. Similarly, one should create a temporary workspace:
+When building a container, or pulling/running an Apptainer container from a Docker/OCI source, a temporary working space is required (default ```/tmp```). The container is constructed in this temporary space before being packaged into an Apptainer SIF image. Similarly, one should create a temporary workspace:
 
 ```
 export APPTAINER_TMPDIR=$VSC_SCRATCH/apptainer-tmpdir

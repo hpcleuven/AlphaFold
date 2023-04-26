@@ -2,13 +2,19 @@
 
 ## Apptainer cache directory
 
-By default, [Apptainer](https://apptainer.org) (formerly Singularity) uses the VSC user's home directory to store its cache. For very small containers that might not be an issue but bigger ones will cause the home direcotry to run out of space. Hence, it is advisable to point Apptainer to use a different directory, e.g., somewhere on the user's scratch space:
+By default, [Apptainer](https://apptainer.org) (formerly Singularity) uses the VSC user's home directory to store its cache (default $HOME/.apptainer/cache). For very small containers that might not be an issue but bigger ones will cause the VSC user home direcotry to run out of space. Hence, it is advisable to point Apptainer to use a different directory, e.g., somewhere on the user's scratch space:
 
 ```
 export APPTAINER_CACHEDIR=$VSC_SCRATCH/apptainer-cache
 ```
 
-NOTE: If both ```SINGULARITY_CACHEDIR``` (legacy) and ```APPTAINER_CACHEDIR``` have been defined and have different values, ```APPTAINER_CACHEDIR``` will be used. The value of  ```SINGULARITY_CACHEDIR``` will be accepted only if ```APPTAINER_CACHEDIR``` has not been defined. This holds for all legacy (Singularity) environment variables.
+When building a container, or pulling/running an Apptainer container from a Docker/OCI source, a temporary working space is required (default /tmp). The container is constructed in this temporary space before being packaged into an Apptainer SIF image. Similarly, one should create a temporary workspace:
+
+```
+export APPTAINER_TMPDIR=$VSC_SCRATCH/apptainer-tmpdir
+```
+
+NOTE: If both ```SINGULARITY_``` (legacy) and ```APPTAINER_``` have been defined and have different values, ```APPTAINER_``` will be used. The value of  ```SINGULARITY_``` will be accepted only if ```APPTAINER_``` has not been defined. This holds for all legacy (Singularity) environment variables.
 
 ## Mount external directories
 

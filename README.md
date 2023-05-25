@@ -34,6 +34,14 @@ export APPTAINER_BIND="/dir1,/dir2:/mnt"
 
 All subdirectories and files in /dir1 and /dir2 will be mounted under /mnt - e.g., */mnt/relative-subdir-path/* and */mnt/filename* - and available for use within the container.
 
+Binding directories like so:
+
+```
+apptainer exec --bind /dir1 --bind /dir2 my_container.sif
+```
+
+will bind */dir1* and */dir2* as additional separate directories within the container.
+
 ## AlphaFold database
 
 The database on the VSC machines at KU Leuven is located in:

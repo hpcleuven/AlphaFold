@@ -67,7 +67,7 @@ The current recipe makes use of an updated Python packages list. The orginal Alp
 Clone the Git repository and navigate to its location:
 
 ```
-git https://github.com/avapirev/alphafold_apptainer.git
+git clone https://github.com/avapirev/alphafold_apptainer.git
 cd alphafold_apptainer
 ```
 

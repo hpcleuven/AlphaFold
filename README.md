@@ -80,7 +80,7 @@ apptainer exec $CONTAINER_IMAGE_DIR/alphafold.sif python /app/alphafold/run_alph
 # Running AlphaFold as a batch job on VSC
 Please refer to the [VIB](https://vib.be/) tutorial material created by Jasper Zuallaert (VIB-UGent), with the help of Alexander Botzki (VIB) and Kenneth Hoste (UGent) here: https://elearning.bits.vib.be/courses/alphafold/
 
-Below are two examples of Slurm job submission scripts - one only on CPUs and one using both CPUs and GPUs. The image created from the official AlphaFold Docker container from Tutorial 2 has been used. Please bear in mind that the job parameters here are only an example and may not be suitable for proper Alphafold runs.
+Below are two examples of Slurm job submission scripts - one only on CPUs and one using both CPUs and GPUs. The image created from the official AlphaFold Docker container from Tutorial 2 has been used. The example target files can be found, e.g., here [Protein Structure Prediction Center](https://www.predictioncenter.org/casp14/targetlist.cgi). Please bear in mind that the job parameters here are only an example and may not be suitable for proper Alphafold runs.
   
 Submit to CPU nodes on wICE:
 ```
